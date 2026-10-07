@@ -23,4 +23,5 @@ abstract: >-
   laminar coal flat flame burner and a turbulent gas-assisted oxy-fuel
   biomass flame.
 repository-code: "https://github.com/STFS-TUDa/oxysim-demo-cases"
-# TODO: add `doi:` and `date-released:` once the DOI is assigned.
+doi: "10.5281/zenodo.23218637"
+date-released: "2026-10-07"
