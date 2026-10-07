@@ -1,0 +1,42 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      thermophysicalProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+//
+// flameletCloudFoam always constructs a canteraThermo, which needs a
+// Cantera-format mechanism file. constant/ITV_mechanism.yaml has 100
+// species (each must exist in the FLUT, including A1XC6H6) and 734
+// reactions.
+
+mechanismFile "constant/ITV_mechanism.yaml";
+phaseName "gas";
+energyType ha;
+transportModel UnityLewis;
+useSoret false;
+inertSpecies N2;
+
+liquids
+{
+    //H2O;
+}
+
+solids
+{
+    ash;
+    C;
+}
+
+
+// ************************************************************************* //

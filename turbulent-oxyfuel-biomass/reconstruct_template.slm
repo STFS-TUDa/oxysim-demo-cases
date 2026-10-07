@@ -1,0 +1,19 @@
+#!/bin/bash
+# Template Slurm script for reconstructing one time step. Copy it to
+# reconstruct_local.slm (untracked) and adapt the entries marked "adapt".
+# It is not submitted directly: ./submitReconstruct.sh <time> submits it twice
+# and sets FLAG (-no-lagrangian | -no-fields) and TIME.
+#SBATCH --job-name=reconstruct
+#SBATCH --output=%x.%A.out
+#SBATCH --error=%x.%A.err
+#SBATCH --account=your-project        # adapt
+#SBATCH --partition=your-partition    # adapt
+#SBATCH --ntasks=1
+#SBATCH --time=48:00:00               # adapt
+##SBATCH --mem-per-cpu=...            # adapt if your site requires it
+
+# Your local copy of oxysim-129's scripts/source_template.sh
+source /path/to/oxysim-129/scripts/source_local.sh    # adapt
+
+# -fileHandler collated matches decomposePar and the solver in submit_template.slm.
+reconstructPar -fileHandler collated "${FLAG}" -time "${TIME}"

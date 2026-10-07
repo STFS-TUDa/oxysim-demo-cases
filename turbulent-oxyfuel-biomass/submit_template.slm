@@ -1,0 +1,22 @@
+#!/bin/bash
+# Template Slurm script for turbulent-oxyfuel-biomass. Copy it to
+# submit_local.slm (untracked), adapt the entries marked "adapt", and submit
+# with:
+#   sbatch submit_local.slm
+#SBATCH --job-name=turbulent-oxyfuel-biomass
+#SBATCH --output=%x.%A.out
+#SBATCH --error=%x.%A.err
+#SBATCH --account=your-project        # adapt
+#SBATCH --partition=your-partition    # adapt
+#SBATCH --nodes=1
+#SBATCH --ntasks=96                   # must match numberOfSubdomains in system/decomposeParDict
+#SBATCH --time=24:00:00               # adapt
+##SBATCH --mem=...                    # adapt if your site requires it
+
+# Your local copy of oxysim-129's scripts/source_template.sh
+source /path/to/oxysim-129/scripts/source_local.sh    # adapt
+
+decomposePar -fileHandler collated -time 6.87
+
+echo "Start Simulation"
+mpirun -n 96 flameletCloudFoam -fileHandler collated -parallel

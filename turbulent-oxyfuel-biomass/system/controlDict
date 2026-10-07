@@ -1,0 +1,71 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     flameletCloudFoam;
+
+startFrom       latestTime;
+
+startTime       6.87;
+
+stopAt          endTime; 
+
+endTime         10;
+
+deltaT          1e-7;
+
+writeControl    adjustableRunTime;
+
+writeInterval   5e-3;
+
+purgeWrite      2;
+
+writeFormat     ascii;
+
+writePrecision  8;
+
+writeCompression on;
+
+timeFormat      general;
+
+timePrecision   8;
+
+runTimeModifiable true;
+
+adjustTimeStep  yes;
+
+maxCo           0.4;
+
+clouds
+{ 
+        walnutCloud    carbonaceousCloud;
+
+}
+
+libs	
+(
+);
+
+functions
+{
+    #include "writeCloud";
+    #include "writeSurface";
+    #include "limitFields";
+}
+
+
+
+// ************************************************************************* //

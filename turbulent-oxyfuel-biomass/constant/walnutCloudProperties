@@ -1,0 +1,252 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      walnutCloudProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+soi                 3.70;
+solution
+{
+    active          true;
+    transient       yes;
+    coupled         true;
+    cellValueSourceCorrection on;
+    maxCo           0.3;
+
+    sourceTerms
+    {
+        schemes
+        {
+            rho             semiImplicit 1;
+            U               semiImplicit 1;
+            Yi              semiImplicit 1;
+            h               semiImplicit 1;
+            radiation       semiImplicit 1;
+        }
+    }
+
+    interpolationSchemes
+    {
+        rho             cell;
+        U               cellPoint;
+        mu              cell;
+        T               cell;
+        cp              cell;
+        kappa           cell;
+        p               cell;
+        G               cell;
+    }
+
+    integrationSchemes
+    {
+        U               Euler;
+        T               analytical;
+    }
+}
+
+constantProperties
+{
+    rho0            1000;
+    T0              300;
+    Cp0             960;
+    epsilon0        0.7;
+    f0              0.5;
+
+    TDevol          350;
+    LDevol          0;
+    hRetentionCoeff 1;
+    constantVolume  false; 
+} 
+subModels
+{
+    particleForces
+    {
+        sphereDrag;
+        gravity;
+    }
+
+    injectionModels
+    {
+       walnut_number_density 
+                {
+                        type            patchInjection;
+                        patch           PRIMARY;
+                        parcelBasisType fixed;
+                        U0              (0.0 0.0 -7.55015239);
+                        massTotal       1.369444e-3;
+                        nParticle       1;
+                        parcelsPerSecond 1.637931e+06;
+                        SOI              $soi;
+                        duration         10; 
+                        flowRateProfile  constant 1; 
+                        sizeDistribution 
+                        { 
+                            type general;
+                            generalDistribution
+                            {
+                                cumulative true;
+                                distribution
+                                (
+                                    ( 0.000016		0.000000 )
+                                    ( 0.000046		0.031584 )
+                                    ( 0.000050		0.133446 )
+                                    ( 0.000054		0.167957 )
+                                    ( 0.000058		0.195333 )
+                                    ( 0.000063		0.209797 )
+                                    ( 0.000068		0.232683 )
+                                    ( 0.000073		0.246295 )
+                                    ( 0.000079		0.253494 )
+                                    ( 0.000085		0.330487 )
+                                    ( 0.000092		0.382437 )
+                                    ( 0.000100		0.439756 )
+                                    ( 0.000108		0.526464 )
+                                    ( 0.000116		0.584020 )
+                                    ( 0.000126		0.709498 )
+                                    ( 0.000136		0.811198 )
+                                    ( 0.000147		0.862024 )
+                                    ( 0.000158		0.917662 )
+                                    ( 0.000171		0.952209 )
+                                    ( 0.000184		0.989612 )
+                                    ( 0.000199		0.995236 )
+                                    ( 0.000215		0.997732 )
+                                    ( 0.000232		1.000000 )
+                                );
+                            }
+              
+                        }
+                }     
+    }        
+            
+    dispersionModel none;
+
+    phaseChangeModel none;
+
+    devolatilisationModel none;
+
+    stochasticCollisionModel none;
+
+    surfaceFilmModel none;
+
+    radiation       on;
+    
+// models with coeffs
+
+    patchInteractionModel standardWallInteraction;
+    
+    heatTransferModel RanzMarshall;
+
+    compositionModel singleMixtureFraction;
+
+    heatCapacityModelSTFS heatCapacityFit;
+
+    surfaceReactionModel COxidationKineticDiffusionLimitedRateSTFS;
+
+    devolatilisationModelSTFS C2SM;
+
+    standardWallInteractionCoeffs
+    {
+        type            rebound;
+        e               1;
+        mu              0.1;
+    }
+
+    RanzMarshallCoeffs
+    {
+        BirdCorrection  true;
+    }
+
+    singleMixtureFractionCoeffs
+    {
+        phases
+        (
+            gas
+            {
+                 C2H3CHO     0.076; 
+                 C2H4        0.038;
+                 C2H6        0.024;   
+                 CH2O        0.140; 
+                 CH3CHO      0.019;
+                 CH3OH       0.038; 
+                 CH4         0.033; 
+                 CO          0.124;
+                 CO2         0.185;
+                 H2O         0.121;
+                 OC8H7OOH    0.202; 
+            }
+            liquid
+            {
+            }
+            solid
+            {
+                ash 1;
+                C 0;
+            }
+        );
+        YGasTot0        0.9934;
+        YLiquidTot0     0;
+        YSolidTot0      0.0066;
+    }
+
+    liquidEvaporationCoeffs
+    {
+        enthalpyTransfer enthalpyDifference;
+
+        activeLiquids
+        (
+        );
+    }
+    
+    heatCapacityFitCoeffs
+    {
+        coefficients
+        (-1.198e3 10.465 -0.0124 5.888e-6 -9.60e-10);
+    }
+    
+    C2SMCoeffs
+    {
+        volatileData
+        (
+           //                      alpha1  A1            E1             alpha2       A2            E2
+               ( CO                0.5     16798.742     61.188850e6    0.82833003   73.176285e6   119.528234e6 )
+               ( CH4               0.5     16798.742     61.188850e6    0.82833003   73.176285e6   119.528234e6 )
+               ( CH2O              0.5     16798.742     61.188850e6    0.82833003   73.176285e6   119.528234e6 )
+               ( CO2               0.5     16798.742     61.188850e6    0.82833003   73.176285e6   119.528234e6 )
+               ( C2H4              0.5     16798.742     61.188850e6    0.82833003   73.176285e6   119.528234e6 )
+               ( C2H6              0.5     16798.742     61.188850e6    0.82833003   73.176285e6   119.528234e6 )
+               ( C2H3CHO           0.5     16798.742     61.188850e6    0.82833003   73.176285e6   119.528234e6 )
+               ( H2O               0.5     16798.742     61.188850e6    0.82833003   73.176285e6   119.528234e6 )
+               ( CH3OH             0.5     16798.742     61.188850e6    0.82833003   73.176285e6   119.528234e6 )
+               ( CH3CHO            0.5     16798.742     61.188850e6    0.82833003   73.176285e6   119.528234e6 )
+               ( OC8H7OOH          0.5     16798.742     61.188850e6    0.82833003   73.176285e6   119.528234e6 )
+
+        );
+
+        residualCoeff 0.2;
+    }
+
+    COxidationKineticDiffusionLimitedRateSTFSCoeffs
+    {
+        Sb              1;        // Stoichiometry of reaction C + Sb/2 * O_2 -> CO
+        C1              7.43e-13; // Mass diffusion limited rate constant, Cdiff
+        C2              1.886e2;  // Kinetics limited rate pre-exponential constant, A
+        E               1.286e8;  // Kinetics limited rate activation energy, Ea
+	dummySpecies    N2;
+    }
+}
+
+
+cloudFunctions
+{}
+
+
+// ************************************************************************* //

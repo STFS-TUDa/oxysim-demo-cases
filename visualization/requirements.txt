@@ -1,0 +1,6 @@
+numpy
+matplotlib
+pyvista
+jupyterlab
+ipykernel
+nbconvert

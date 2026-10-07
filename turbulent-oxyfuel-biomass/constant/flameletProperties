@@ -1,0 +1,122 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.0                                   |
+|   \\  /    A nd           | Web:      http://www.openfoam.org               |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+FoamFile
+{
+    version         2.0;
+    format          ascii;
+
+    root            "";
+    case            "";
+    instance        "";
+    local           "";
+
+    class           dictionary;
+    object          flameletProperties;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+flutType   table;
+flutFile   FLUT.h5; 
+flutFileBC FLUT_BC.h5; 
+
+
+variablesToSolve (SZ1 Z1 Z2 SZ3 Z3 Z Y YY ha Syc yc Zvar);  // order of the variables of the transport equations that are solved
+inputVariablesFlameletTable ( Z Y YY ha yc Zvar );
+outputVariablesFlameletTable (H2O OH CH4 CO2 O2 CO cc W);
+
+variableEquations
+{
+    Z
+    {
+        updateType                      sum;
+        summands                        (Z1 Z2 Z3); 
+    }
+    Z1 //char
+    {
+        updateType                      unityLewis_particleSource;
+    }
+    SZ1 //char
+    {
+        updateType                      particleSource;
+        cloudNames                      (walnutCloud);
+        speciesWeights
+        (
+                                        (N2     3.1240145714607204) //dummy species representing CO
+        );
+    }
+    Z2 //methane
+    {
+        updateType                      unityLewis_noSource;
+    }
+    Z3 //volatiles
+    {
+        updateType                      unityLewis_particleSource;
+    }
+    SZ3 //volatiles
+    {
+        updateType                      particleSource;
+        cloudNames                      (walnutCloud);
+        speciesWeights
+        (
+                                        (CO        1) 
+                                        (CH4       1) 
+                                        (CH2O      1) 
+                                        (CO2       1) 
+                                        (C2H4      1) 
+                                        (C2H6      1)  
+                                        (C2H3CHO   1) 
+                                        (H2O       1) 
+                                        (CH3OH     1) 
+                                        (CH3CHO    1)  
+                                        (OC8H7OOH  1) 
+        );
+    }
+    Y
+    {
+       updateType                      fraction;
+       numerators                      (Z2 Z3);
+       denominators                    (Z1 Z2 Z3);
+    }
+    YY
+    {
+       updateType                      fraction;
+       numerators                      (Z3);
+       denominators                    (Z2 Z3);
+    }
+    yc
+    {
+        updateType       unityLewis_sourceTerm_particleSource;
+    }
+    Syc
+    {
+        updateType                      particleSource;
+        cloudNames                      (walnutCloud);
+        speciesWeights
+        (
+                                        (CO2    18)
+                                        (CO     24)
+                                        (H2O    23)
+                                        (H2    -25)
+                                        (O2    -24)   
+                                        (N2     24) //dummy species representing CO for char reaction  
+        );
+    }
+    ha
+    {
+        updateType                      unityLewis_particleEnthalpySource;
+        cloudNames                      (walnutCloud);
+    }
+    Zvar
+    {
+        updateType                      varianceAlgebraic;
+        Cvar                            0.13;
+        variableName                    Z;
+    }
+}
+// ************************************************************************* //

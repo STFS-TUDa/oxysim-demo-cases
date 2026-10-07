@@ -1,0 +1,17 @@
+#!/bin/sh
+cd "${0%/*}" || exit 1
+
+# Requires an oxysim-129 build on PATH/LD_LIBRARY_PATH (see README) and an
+# OpenFOAM environment sourced (for blockMesh, topoSet, createPatch,
+# decomposePar, reconstructPar, runApplication/RunFunctions).
+. "${WM_PROJECT_DIR:?source an OpenFOAM environment first}"/bin/tools/RunFunctions
+
+runApplication blockMesh
+runApplication topoSet
+runApplication createPatch -overwrite
+
+runApplication decomposePar
+runParallel flameletCloudFoam
+runApplication reconstructPar -latestTime
+
+# ************************************************************************* //

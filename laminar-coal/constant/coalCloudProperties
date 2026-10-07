@@ -1,0 +1,199 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      coalCloudProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solution
+{
+    active          true;
+    transient       yes;
+    coupled         true;
+    cellValueSourceCorrection on;
+    maxCo           0.3;
+
+    sourceTerms
+    {
+        schemes
+        {
+            rho             semiImplicit 1;
+            U               semiImplicit 1;
+            Yi              semiImplicit 1;
+            h               semiImplicit 1;
+            radiation       semiImplicit 1;
+        }
+    }
+
+    interpolationSchemes
+    {
+        rho             cell;
+        U               cellPoint;
+        thermo:mu       cell;
+        mu              cell;
+        T               cell;
+        cp              cell;
+        kappa           cell;
+        p               cell;
+        G               cell;
+    }
+
+    integrationSchemes
+    {
+        U               Euler;
+        T               analytical;
+    }
+}
+
+constantProperties
+{
+    rho0            1200;
+    T0              313;
+    Cp0             1200;
+    epsilon0        1;
+    f0              0.5;
+
+    TDevol          300;
+    LDevol          0;
+    hRetentionCoeff 1;
+    constantVolume  false;
+}
+
+subModels
+{
+    particleForces
+    {
+        sphereDrag;
+        gravity;
+    }
+
+    injectionModels
+    {
+        model2
+        {
+            type            patchInjection;
+            patch           injectionPatch;
+            parcelBasisType fixed;
+            U0              (0.01 0.01 0.2);
+            massTotal        220e-8;
+            nParticle       1;
+            parcelsPerSecond 4765;
+            SOI              0;
+            duration         0.3;
+            flowRateProfile  constant 1;
+            sizeDistribution
+            {
+                type normal;
+                normalDistribution
+                {
+                    expectation 121.6e-6;
+                    variance 20e-6;
+                    minValue 90e-6;
+                    maxValue 125e-6;
+                }
+            }
+        }
+    }
+
+    dispersionModel none;
+
+    patchInteractionModel none;
+
+    heatTransferModel RanzMarshall;
+
+    compositionModel singleMixtureFraction;
+
+    phaseChangeModel none;
+
+    devolatilisationModel none;
+
+    devolatilisationModelSTFS C2SM;
+
+    stochasticCollisionModel none;
+
+    surfaceReactionModel none;
+
+    surfaceFilmModel none;
+
+    heatCapacityModelSTFS none;
+
+    radiation       off;
+
+    standardWallInteractionCoeffs
+    {
+        type            rebound;
+        e               1;
+        mu              0;
+    }
+
+    RanzMarshallCoeffs
+    {
+        BirdCorrection  true;
+    }
+
+    singleMixtureFractionCoeffs
+    {
+        phases
+        (
+            gas
+            {
+                H2            0.092;
+                H2O           0.072;
+                CO            0.156;
+                CO2           0.082;
+                CH4           0.059;
+                A1XC6H6       0.539;
+            }
+            liquid
+            {
+            }
+            solid
+            {
+                C 1;
+            }
+        );
+        YGasTot0        1;
+        YLiquidTot0     0;
+        YSolidTot0      0;
+    }
+
+    liquidEvaporationCoeffs
+    {
+        enthalpyTransfer enthalpyDifference;
+
+        activeLiquids
+        (
+        );
+    }
+
+    C2SMCoeffs
+    {
+        volatileData
+        (
+        (H2      0.484 1.65e5 4.8988e7 0.752 4.312e8 1.324e8)
+        (H2O     0.484 1.65e5 4.8988e7 0.752 4.312e8 1.324e8)
+        (CO      0.484 1.65e5 4.8988e7 0.752 4.312e8 1.324e8)
+        (CO2     0.484 1.65e5 4.8988e7 0.752 4.312e8 1.324e8)
+        (CH4     0.484 1.65e5 4.8988e7 0.752 4.312e8 1.324e8)
+        (A1XC6H6 0.484 1.65e5 4.8988e7 0.752 4.312e8 1.324e8)
+        );
+
+        residualCoeff 1e-6;
+    }
+}
+
+
+cloudFunctions
+{}
+
+
+// ************************************************************************* //

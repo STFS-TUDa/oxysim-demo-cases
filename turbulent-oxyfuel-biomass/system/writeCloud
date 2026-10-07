@@ -1,0 +1,26 @@
+writeCloud
+{
+    type    vtkCloud;
+    libs    (lagrangianFunctionObjects);
+    log     true;
+
+    // Cloud name
+     cloud   walnutCloud;
+
+    // Fields to output (words or regex)
+    fields  ( U T d origId origProc nParticle age mass0 d0 mass Ts);
+    selection
+    {
+    stride
+        {
+            // every 50th parcelId
+            action  add;
+            source  stride;
+            stride  50;
+        }
+    }
+
+    //- Write more frequent than fields
+    writeControl    adjustableRunTime;
+    writeInterval   1e-4;
+}

@@ -1,0 +1,114 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      radiationProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+radiation on;
+
+radiationModel  fvDOMwsgg;
+
+fvDOMwsggCoeffs
+{
+    nPhi        4;      // azimuthal angles in PI/2 on X-Y.(from Y to X)
+    nTheta      6;      // polar angles in PI (from Z to X-Y plane)
+    maxIter     2;      // maximum number of iterations
+    tolerance   1e-1;   // convergence criteria for radiation iteration
+}
+
+// Number of flow iterations per radiation iteration
+solverFreq 80;
+
+thermoName flameletProperties;
+
+absorptionEmissionModel wsggBinaryAbsorptionEmission;
+wsggBinaryAbsorptionEmissionCoeffs
+{
+    model1
+    {
+	absorptionEmissionModel wsggBordbarAbsorptionEmission;	
+        wsggBordbarAbsorptionEmissionCoeffs 
+        {
+        
+            c1Coeffs 
+              5        
+              (
+            	5(0.7412956	-0.5244441	0.582286	-0.2096994	0.0242031)
+            	5(-0.9412652	0.2799577	-0.7672319	0.3204027	-0.0391017)
+            	5(0.8531866	0.0823075	0.528943	-0.2468463	0.031094)
+            	5(-0.3342806	0.1474987	-0.4160689	0.1697627	-0.0204066)
+            	5(0.0431436	-0.0688622	0.1109773	-0.0420861	0.0049188)
+              );
+            
+            c2Coeffs
+              5
+              (
+            	5(0.1552073	-0.4862117	0.3668088	-0.1055508	0.0105857)
+            	5(0.6755648	1.409271	-1.3834490	0.457521	-0.0501976)
+            	5(-1.1253940	-0.5913199	0.9085441	-0.3334201	0.0384236)
+            	5(0.6040543	-0.0553385	-0.1733014	0.0791608	-0.0098934)
+            	5(-0.1105453	0.0464663	-0.0016129	-0.0035398	0.0006121)
+              );
+            
+            c3Coeffs
+              5
+              (
+            	5(0.2550242	0.3805403	-0.4249709	0.1429446	-0.0157408)
+            	5(-0.6065428	0.3494024	0.1853509	-0.1013694	0.0130244)
+            	5(0.8123855	-1.1020090	0.4046178	-0.0811822	0.0062981)
+            	5(-0.4532290	0.6784475	-0.3432603	0.0883088	-0.0084152)
+            	5(0.0869309	-0.1306996	0.0741446	-0.0202929	0.002011)
+              );
+            
+            c4Coeffs
+              5
+              (
+            	5(-0.0345199	0.2656726	-0.1225365	0.0300151	-0.0028205)
+            	5(0.4112046	-0.5728350	0.292449	-0.0798076	0.0079966)
+            	5(-0.5055995	0.4579559	-0.2616436	0.0764841	-0.0079084)
+            	5(0.2317509	-0.1656759	0.1052608	-0.0321935	0.003387)
+            	5(-0.0375491	0.022952	-0.0160047	0.0050463	-0.0005364)
+              );
+             
+            dCoeffs
+              4
+              (
+            	5(0.0340429	0.0652305	-0.0463685	0.0138684	-0.0014450)
+            	5(0.3509457	0.7465138	-0.5293090	0.1594423	-0.0166326)
+            	5(4.57074	2.168067	-1.4989010	0.4917165	-0.0542999)
+            	5(109.8169	-50.923590	23.43236	-5.1638920	0.4393889)
+              );
+        
+        }
+    }
+    model2
+    {
+        absorptionEmissionModel wsggGreyCloudAbsorptionEmission;
+        wsggGreyCloudAbsorptionEmissionCoeffs
+        {
+            cloudNames
+            (
+            walnutCloud
+            );
+        }
+    }
+}
+
+scatterModel    none;
+
+sootModel       none;
+
+
+// ************************************************************************* //

@@ -1,0 +1,116 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     flameletCloudFoam;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         0.15;
+
+deltaT          5e-6;
+
+writeControl    adjustableRunTime;
+
+writeInterval  0.01; 
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  10;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+adjustTimeStep  yes;
+
+maxCo           1e-1;
+
+maxDeltaT       1;
+
+clouds
+{
+    coalCloud      carbonaceousCloud;
+}
+
+libs    ();
+
+// ************************************************************************* //
+functions
+{
+    writeSurface 
+    {
+        type            surfaces;
+        libs            ("libsampling.so");
+        writeControl    adjustableRunTime;
+        writeInterval   1e-4;
+
+        interpolationScheme cellPoint;
+
+        surfaceFormat vtk;
+
+        // Fields to be sampled
+        fields
+        (
+            U
+            yc
+            Z
+            T
+            OH
+        );
+
+        surfaces
+        (
+            slice
+            {
+                type            cuttingPlane;
+                planeType       pointAndNormal;
+                pointAndNormalDict
+                {
+                basePoint       (0 0 0);
+                normalVector    (0 1 0);
+                }
+            }
+        );
+    }
+writeCloud
+{
+    type    vtkCloud;
+    libs    (lagrangianFunctionObjects);
+    log     true;
+
+    // Cloud name
+     cloud   coalCloud;
+
+    // Fields to output (words or regex)
+    fields  ( U T d "Y.*" age origId);
+
+    //- Write more frequent than fields
+    writeControl    adjustable;
+    writeInterval   1e-4;
+}
+
+}

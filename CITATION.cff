@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+title: "oxysim-demo-cases: demonstration cases for oxysim-129"
+message: >-
+  If you use these cases, please cite this repository (DOI) together with the
+  paper the case is based on: Nicolai et al. (2021),
+  doi:10.1016/j.proci.2020.06.081 for laminar-coal, or Vahl et al. (2026),
+  doi:10.1016/j.fuel.2026.138602 for turbulent-oxyfuel-biomass.
+type: software
+authors:
+  - family-names: Steffens
+    given-names: Pascal
+  - family-names: Vahl
+    given-names: Antje
+  - family-names: Berkel
+    given-names: Leon Loni
+  - family-names: Nicolai
+    given-names: Hendrik
+  - family-names: Hasse
+    given-names: Christian
+abstract: >-
+  Runnable demonstration cases for oxysim-129, an OpenFOAM-based
+  flamelet/FLUT combustion framework with Lagrangian particle coupling: a
+  laminar coal flat flame burner and a turbulent gas-assisted oxy-fuel
+  biomass flame.
+repository-code: "https://github.com/STFS-TUDa/oxysim-demo-cases"
+# TODO: add `doi:` and `date-released:` once the DOI is assigned.

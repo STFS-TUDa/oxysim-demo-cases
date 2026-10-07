@@ -1,0 +1,117 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.6                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      binary;
+    class       dictionary;
+    location    "system";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// ************************************************************************* //
+solvers
+{
+    "rho.*"
+    {
+        solver          diagonal;
+    }
+    "(p|pd)"
+    {
+        solver           PCG;
+        preconditioner   DIC;
+        tolerance        1e-6;
+        relTol           0.1;
+    }
+
+    "(p|pd)Final"
+    {
+        $p;
+        tolerance        1e-6;
+        relTol           0.0;
+    }
+
+    "(U|Z|Y|YY|yc|h|ha|k|epsilon|Z1|Z2|Z3)"
+    {
+        solver          PBiCGStab;
+        preconditioner  DILU;
+        tolerance       1e-8;
+        relTol          0.1;
+    }
+
+    "(U|Z|Y|YY|yc|h|ha|k|epsilon|Z|Z1|Z2|Z3)Final"
+    {
+        $U;
+        relTol          0;
+    }
+
+    Ii
+    {
+        solver              GAMG;
+        tolerance           1e-4;
+        relTol              0;
+        smoother            symGaussSeidel;
+        maxIter             5;
+        nPostSweeps         1;
+    }
+
+
+    G
+    {
+        solver          PCG;
+        preconditioner  DIC;
+        tolerance       1e-5;
+        relTol          0.1;
+    }
+
+    GFinal
+    {
+        $G;
+        relTol          0;
+    }
+
+}
+
+PIMPLE
+{
+    transonic	no;
+    nCorrectors 2;
+    nOuterCorrectors 3;
+    nNonOrthogonalCorrectors 2;
+    momentumPredictor true;
+    pMin         0.95e5;   
+    pMax         105e3;
+    lowMach false;
+    consistent true;
+    residualControl
+    {
+        "(p|U)" 
+        {
+          tolerance    1e-4;
+          relTol      0;
+        }
+	Ii
+	{
+	  tolerance	1e-2;
+	  relTol	0;
+	}
+    }
+}
+
+relaxationFactors
+{
+    Z	    1;
+    equations
+    {
+        ".*"     1;
+    }
+}
+
+
+// ************************************************************************* //

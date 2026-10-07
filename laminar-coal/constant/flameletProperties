@@ -1,0 +1,91 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      flameletProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+//
+// The table's input variables are, in table-dimension order:
+//   0: Z    (mixture fraction, not normalized)
+//   1: ha   (enthalpy; stored normalized as "Hnorm" in the table, flut-reader
+//            un-normalizes automatically using ha_min/ha_max output data)
+//   2: yc   (progress variable; stored normalized as "cc" in the table,
+//            un-normalized automatically using yc_min/yc_max)
+// No boundary FLUT is used: the WALL patch on `ha` uses a plain gradientEnergy
+// (adiabatic) BC, so no boundary lookup is needed here.
+
+flutFile "FLUT.h5";
+
+inputVariablesFlameletTable (Z ha yc);
+outputVariablesFlameletTable ();
+
+// Only the variables listed here are actually solved -- an entry defined
+// under variableEquations but missing from this list is never solved and
+// stays at its zero-initialised default for the whole run. They are also
+// solved in the order listed, so SZ/Syc (particle sources) must come
+// before the Z/yc equations that consume them.
+variablesToSolve (SZ Z ha Syc yc);
+
+variableEquations
+{
+    // Mixture fraction: pure transport + particle (devolatilisation/char)
+    // mass source. No chemical source term (Z is conserved).
+    SZ
+    {
+        updateType                     particleSource;
+        cloudNames                     (coalCloud);
+        speciesWeights
+        (
+                                        (H2         1)
+                                        (H2O        1)
+                                        (CO         1)
+                                        (CO2        1)
+                                        (CH4        1)
+                                        (A1XC6H6    1)
+        );
+    }
+    Z
+    {
+        updateType                     unityLewis_particleSource;
+    }
+
+    // Enthalpy: pure transport + particle heat-exchange source (no radiation
+    // model is active in this case: radiation off in coalCloudProperties,
+    // and no radiationProperties file is present).
+    ha
+    {
+        updateType                     unityLewis_particleEnthalpySource;
+        cloudNames                     (coalCloud);
+    }
+
+    // Progress variable: transport with BOTH a chemical/reaction-rate source
+    // looked up from the FLUT (omega_yc) AND a particle source (Syc).
+    Syc
+    {
+        updateType                     particleSource;
+        cloudNames                     (coalCloud);
+        speciesWeights
+        (
+                                        (CO2        1)
+                                        (H2O        1)
+                                        (CO         1)
+                                        (H2         1)
+        );
+    }
+    yc
+    {
+        updateType                     unityLewis_sourceTerm_particleSource;
+    }
+}
+
+// ************************************************************************* //

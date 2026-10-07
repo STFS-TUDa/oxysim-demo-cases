@@ -1,0 +1,111 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+// blockMesh :  Block mesh description file
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+FoamFile
+{
+version  0.5;
+format   ascii;
+root     "";
+case     "";
+instance "constant";
+local    "mesh";
+class dictionary;
+object blockMeshDict;
+}
+// ************************************
+
+
+
+
+
+
+   meshGenApp blockMesh;
+   scale 	     0.001;
+
+   
+   
+   
+   
+   vertices
+   ( 
+    ( 11 -11 0) // Vertex fiveoclockfn = 0
+    (-11 -11 0) // Vertex sevenoclockfn = 1 
+    (-11 11  0) // Vertex elevenoclockfn = 2 
+    ( 11 11  0) // Vertex oneoclockfn = 3 
+    ( 11 -11 20) // Vertex fiveoclockfp1 = 4
+    (-11 -11 20) // Vertex sevenoclockfp1 = 5 
+    (-11 11  20) // Vertex elevenoclockfp1 = 6 
+    ( 11 11  20) // Vertex oneoclockfp1 = 7 
+      );				
+
+   blocks
+   (
+    // Square core block
+    hex (
+	 1 0 3 2
+      	 5 4 7 6 
+	)
+    (70 70 105)
+    simpleGrading ( 
+    (
+    (0.31 0.17 0.14289)
+    (0.28 0.66 1)
+    (0.31 0.17 7)
+    )
+    (
+    (0.31 0.17 0.14289)
+    (0.28 0.66 1)
+    (0.31 0.17 7)
+    )
+    1
+    )
+  );
+boundary
+(
+
+    WALL
+    {
+        type patch;
+        faces
+        (
+     (0 3 7 4)
+     (1 0 4 5)
+     (2 1 5 6)
+     (3 2 6 7)
+
+
+
+        );
+    }
+    
+    OUTLET 
+    {
+	type patch;
+	faces
+	(
+        (5 4 7 6)
+ 
+	);
+    }
+
+    INLET
+    {
+	type patch;
+    faces
+	(
+
+        (1 0 3 2)
+	);
+    } 
+
+   
+);
+
+
+
