@@ -96,3 +96,8 @@ When using one of these cases, cite both:
 The full references are in the "Reference" section of each case's README
 ([`laminar-coal`](laminar-coal/README.md#reference),
 [`turbulent-oxyfuel-biomass`](turbulent-oxyfuel-biomass/README.md#reference)).
+
+## License
+
+Released under the [GNU General Public License v3.0](LICENSE), the same license
+as [oxysim-129](https://github.com/STFS-TUDa/oxysim-129).

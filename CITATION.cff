@@ -22,6 +22,7 @@ abstract: >-
   flamelet/FLUT combustion framework with Lagrangian particle coupling: a
   laminar coal flat flame burner and a turbulent gas-assisted oxy-fuel
   biomass flame.
+license: GPL-3.0
 repository-code: "https://github.com/STFS-TUDa/oxysim-demo-cases"
 doi: "10.5281/zenodo.23218637"
 date-released: "2026-10-07"
