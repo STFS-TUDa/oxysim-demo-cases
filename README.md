@@ -1,5 +1,7 @@
 # oxysim-demo-cases
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23218637.svg)](https://doi.org/10.5281/zenodo.23218637)
+
 Runnable demonstration cases for
 [oxysim-129](https://github.com/STFS-TUDa/oxysim-129),
 an OpenFOAM-based flamelet/FLUT combustion framework with Lagrangian
@@ -84,7 +86,7 @@ see that case's README for where to place them.
 When using one of these cases, cite both:
 
 1. **This repository's DOI** (the demo cases themselves) --
-   DOI: *to be added once assigned*.
+   [doi:10.5281/zenodo.23218637](https://doi.org/10.5281/zenodo.23218637).
 2. **The paper the case is based on:**
    - `laminar-coal`: Nicolai et al. (2021),
      [doi:10.1016/j.proci.2020.06.081](https://doi.org/10.1016/j.proci.2020.06.081)
